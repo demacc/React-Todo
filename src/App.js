@@ -6,6 +6,7 @@ import CheckAllAndRemaining from "./components/CheckAllAndRemaining";
 import FliterTodos from "./components/FliterTodos";
 import ClearupTodos from "./components/ClearupTodos";
 import { useEffect, useState } from "react";
+import { upload } from "@testing-library/user-event/dist/upload";
 
 function App() {
   let [todos, setTodos] = useState([]);
@@ -43,12 +44,32 @@ function App() {
       });
     });
   };
+
+  let updateTodo = (uploadTodo) => {
+    fetch(`http://localhost:3001/todos/${uploadTodo.id}`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "PATCH",
+      body: JSON.stringify(updateTodo),
+    });
+
+    setTodos((prevState) => {
+      return prevState.map((t) => {
+        if (t.id === uploadTodo.id) {
+          return uploadTodo;
+        }
+        return t;
+      });
+    });
+  };
   return (
     <div className="todo-app-container">
       <div className="todo-app">
         <h2>Todo Web</h2>
         <TodoForm addTodo={addTodo} />
-        <TodoList todos={todos} deleTodo={deleTodo} />
+        <TodoList todos={todos} deleTodo={deleTodo} updateTodo={updateTodo} />
         <CheckAllAndRemaining />
         <div className="other-buttons-container">
           <FliterTodos />

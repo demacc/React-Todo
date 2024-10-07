@@ -1,16 +1,46 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 
-export default function Todo({ todo, deleTodo }) {
+export default function Todo({ todo, deleTodo, updateTodo }) {
+  let [isEdit, setIsEdit] = useState(false);
+
+  let [title, setTitle] = useState(todo.title);
+
+  let uploadHandler = (e) => {
+    e.preventDefault();
+
+    let uploadData = {
+      id: todo.id,
+      title,
+      completed: todo.completed,
+    };
+    updateTodo(uploadData);
+    setIsEdit(false);
+  };
+
   return (
     <li className="todo-item-container">
       <div className="todo-item">
         <input type="checkbox" />
-        <span
-          className={`todo-item-label ${todo.completed ? "line-through" : ""}`}
-        >
-          {todo.title}
-        </span>
-        {/* <input type="text" className="todo-item-input" value="Go to Grocery" /> */}
+        {!isEdit && (
+          <span
+            className={`todo-item-label ${
+              todo.completed ? "line-through" : ""
+            }`}
+            onDoubleClick={() => setIsEdit(true)}
+          >
+            {todo.title}
+          </span>
+        )}
+        {isEdit && (
+          <form onSubmit={uploadHandler}>
+            <input
+              type="text"
+              className="todo-item-input"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </form>
+        )}
       </div>
       <button className="x-button" onClick={() => deleTodo(todo.id)}>
         <svg
