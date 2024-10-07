@@ -5,22 +5,35 @@ export default function Todo({ todo, deleTodo, updateTodo }) {
 
   let [title, setTitle] = useState(todo.title);
 
-  let uploadHandler = (e) => {
+  let updateTodoHandler = (e) => {
     e.preventDefault();
 
-    let uploadData = {
+    let updatedTodo = {
       id: todo.id,
       title,
       completed: todo.completed,
     };
-    updateTodo(uploadData);
+    updateTodo(updatedTodo);
     setIsEdit(false);
+  };
+
+  let checkHandler = () => {
+    let updatedTodo = {
+      id: todo.id,
+      title,
+      completed: !todo.completed,
+    };
+    updateTodo(updatedTodo);
   };
 
   return (
     <li className="todo-item-container">
       <div className="todo-item">
-        <input type="checkbox" />
+        <input
+          type="checkbox"
+          checked={todo.completed}
+          onChange={checkHandler}
+        />
         {!isEdit && (
           <span
             className={`todo-item-label ${
@@ -32,7 +45,7 @@ export default function Todo({ todo, deleTodo, updateTodo }) {
           </span>
         )}
         {isEdit && (
-          <form onSubmit={uploadHandler}>
+          <form onSubmit={updateTodoHandler}>
             <input
               type="text"
               className="todo-item-input"
